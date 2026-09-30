@@ -95,7 +95,7 @@ def get_signal_quality() -> Optional[int]:
 def get_access_tech() -> Optional[str]:
     """Get access technology (5G/LTE/UMTS) from ModemManager."""
     info = get_modem_info()
-    return info.get("modem.generic.access-technologies.current")
+    return info.get("modem.generic.access-technologies.value[1]") or info.get("modem.generic.access-technologies.current")
 
 
 def get_state() -> Optional[str]:

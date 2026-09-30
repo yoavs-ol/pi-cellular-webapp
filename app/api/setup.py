@@ -26,11 +26,11 @@ def configure_qmi(apn: str = DEFAULT_APN, metric: int = DEFAULT_ROUTE_METRIC) ->
             return {"success": False, "message": "Quectel module not on USB"}
         
         subprocess.run(
-            ["apt-get", "install", "-y", "modemmanager", "libqmi-utils", "python3-serial"],
+            ["sudo", "apt-get", "install", "-y", "modemmanager", "libqmi-utils", "python3-serial"],
             check=True, capture_output=True
         )
         
-        subprocess.run(["systemctl", "stop", "ModemManager"], check=True)
+        subprocess.run(["sudo", "systemctl", "stop", "ModemManager"], check=True)
         
         from app.utils.at_command import send_at
         success, resp = send_at("AT+CPIN?")
@@ -45,7 +45,7 @@ def configure_qmi(apn: str = DEFAULT_APN, metric: int = DEFAULT_ROUTE_METRIC) ->
             send_at('AT+CFUN=1,1')
             time.sleep(45)
         
-        subprocess.run(["systemctl", "start", "ModemManager"], check=True)
+        subprocess.run(["sudo", "systemctl", "start", "ModemManager"], check=True)
         time.sleep(10)
         
         for _ in range(30):
@@ -67,7 +67,7 @@ def configure_qmi(apn: str = DEFAULT_APN, metric: int = DEFAULT_ROUTE_METRIC) ->
         
         if CON_NAME in result.stdout:
             subprocess.run([
-                "nmcli", "connection", "modify", CON_NAME,
+                "sudo", "nmcli", "connection", "modify", CON_NAME,
                 "gsm.apn", apn,
                 "ipv6.method", "disabled",
                 "ipv4.route-metric", str(metric),
@@ -75,7 +75,7 @@ def configure_qmi(apn: str = DEFAULT_APN, metric: int = DEFAULT_ROUTE_METRIC) ->
             ], check=True)
         else:
             subprocess.run([
-                "nmcli", "connection", "add", "type", "gsm",
+                "sudo", "nmcli", "connection", "add", "type", "gsm",
                 "ifname", "*", "con-name", CON_NAME,
                 "gsm.apn", apn,
                 "ipv6.method", "disabled",
@@ -83,7 +83,7 @@ def configure_qmi(apn: str = DEFAULT_APN, metric: int = DEFAULT_ROUTE_METRIC) ->
                 "connection.autoconnect", "yes"
             ], check=True)
         
-        subprocess.run(["nmcli", "connection", "up", CON_NAME], check=True)
+        subprocess.run(["sudo", "nmcli", "connection", "up", CON_NAME], check=True)
         
         time.sleep(3)
         
