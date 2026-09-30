@@ -9,6 +9,27 @@ from app.config import CAPTURES_DIR, DEFAULT_APN, DEFAULT_ROUTE_METRIC, CON_NAME
 logger = logging.getLogger(__name__)
 
 
+def update_apn_metric(apn: str = DEFAULT_APN, metric: int = DEFAULT_ROUTE_METRIC) -> Dict:
+    """Quick APN/metric update without full QMI setup."""
+    try:
+        subprocess.run([
+            "sudo", "nmcli", "connection", "modify", CON_NAME,
+            "gsm.apn", apn,
+            "ipv4.route-metric", str(metric)
+        ], check=True, capture_output=True)
+        
+        subprocess.run(["sudo", "nmcli", "connection", "down", CON_NAME], check=True, capture_output=True)
+        time.sleep(2)
+        subprocess.run(["sudo", "nmcli", "connection", "up", CON_NAME], check=True, capture_output=True)
+        
+        from app.utils.audit_log import log_operation
+        log_operation("APN_UPDATE", f"Updated APN to {apn}, metric to {metric}")
+        
+        return {"success": True, "message": f"APN changed to {apn}, metric to {metric}"}
+    except subprocess.CalledProcessError as e:
+        return {"success": False, "message": f"Update failed: {e}"}
+
+
 def configure_qmi(apn: str = DEFAULT_APN, metric: int = DEFAULT_ROUTE_METRIC) -> Dict:
     """
     One-shot QMI setup.

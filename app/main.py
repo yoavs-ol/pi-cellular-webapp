@@ -5,7 +5,7 @@ from app.api.modem import get_modem_status
 from app.api.power import get_power_status, radio_on, radio_off, reset_modem, shutdown_modem
 from app.api.identity import get_identity, change_imei, generate_random_imei, restore_imei
 from app.api.capture import start_capture, list_captures, delete_capture
-from app.api.setup import configure_qmi
+from app.api.setup import configure_qmi, update_apn_metric
 from app.utils.time_sync import sync_system_clock, get_network_time
 from app.utils.audit_log import get_audit_log
 from app.utils.file_retention import run_cleanup
@@ -26,7 +26,17 @@ def setup():
     if request.method == "POST":
         apn = request.form.get("apn", "pdn-1")
         metric = int(request.form.get("metric", 50))
-        result = configure_qmi(apn, metric)
+        
+        result = subprocess.run(
+            ["nmcli", "-t", "-f", "NAME", "connection", "show"],
+            capture_output=True, text=True
+        )
+        
+        if CON_NAME in result.stdout:
+            result = update_apn_metric(apn, metric)
+        else:
+            result = configure_qmi(apn, metric)
+        
         return jsonify(result)
     return render_template("setup.html")
 
