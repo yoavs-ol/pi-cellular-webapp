@@ -1,18 +1,47 @@
+:root {
+    --onelayer-primary: #0066CC;
+    --onelayer-secondary: #00A3E0;
+    --onelayer-accent: #FF6B35;
+    --onelayer-dark: #1A1A2E;
+    --onelayer-light: #F5F7FA;
+    --onelayer-success: #28A745;
+    --onelayer-danger: #DC3545;
+    --onelayer-warning: #FFC107;
+}
+
 body {
-    background-color: #f8f9fa;
+    background-color: var(--onelayer-light);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 }
 
 .navbar-brand {
-    font-weight: bold;
+    font-weight: 700;
+    font-size: 1.3rem;
+    color: #fff !important;
+}
+
+.navbar-brand::before {
+    content: "◉ ";
+    color: var(--onelayer-accent);
 }
 
 .card {
-    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    box-shadow: 0 0.125rem 0.5rem rgba(0, 102, 204, 0.1);
+    border: none;
+    border-radius: 8px;
+    transition: box-shadow 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: 0 0.25rem 1rem rgba(0, 102, 204, 0.15);
 }
 
 .card-header {
-    background-color: #343a40;
+    background: linear-gradient(135deg, var(--onelayer-dark) 0%, #2D2D44 100%);
     color: white;
+    font-weight: 600;
+    border-radius: 8px 8px 0 0 !important;
+    padding: 1rem 1.25rem;
 }
 
 .table {
@@ -21,32 +50,164 @@ body {
 
 .table th {
     width: 30%;
+    color: var(--onelayer-primary);
+    font-weight: 600;
+    border-top: none;
+}
+
+.table td {
+    color: var(--onelayer-dark);
 }
 
 .alert {
     margin-bottom: 0;
+    border-radius: 6px;
+    border: none;
+}
+
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.alert-danger {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.alert-warning {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.alert-info {
+    background-color: #d1ecf1;
+    color: #0c5460;
 }
 
 code {
-    background-color: #e9ecef;
+    background-color: var(--onelayer-light);
     padding: 0.2rem 0.4rem;
     border-radius: 3px;
+    color: var(--onelayer-primary);
+    font-size: 0.9em;
 }
 
 .btn {
     margin-right: 0.5rem;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: all 0.3s ease;
 }
 
-.modal-header {
-    background-color: #343a40;
+.btn-primary {
+    background-color: var(--onelayer-primary);
+    border-color: var(--onelayer-primary);
+}
+
+.btn-primary:hover {
+    background-color: #0052A3;
+    border-color: #0052A3;
+    transform: translateY(-1px);
+}
+
+.btn-warning {
+    background-color: var(--onelayer-accent);
+    border-color: var(--onelayer-accent);
     color: white;
 }
 
+.btn-warning:hover {
+    background-color: #E55A2B;
+    border-color: #E55A2B;
+    color: white;
+    transform: translateY(-1px);
+}
+
+.btn-danger {
+    background-color: var(--onelayer-danger);
+    border-color: var(--onelayer-danger);
+}
+
+.btn-danger:hover {
+    background-color: #BD2130;
+    border-color: #BD2130;
+    transform: translateY(-1px);
+}
+
+.btn-secondary {
+    background-color: #6C757D;
+    border-color: #6C757D;
+}
+
+.btn-secondary:hover {
+    background-color: #5A6268;
+    border-color: #5A6268;
+    transform: translateY(-1px);
+}
+
+.btn-info {
+    background-color: var(--onelayer-secondary);
+    border-color: var(--onelayer-secondary);
+    color: white;
+}
+
+.btn-info:hover {
+    background-color: #008AB8;
+    border-color: #008AB8;
+    color: white;
+    transform: translateY(-1px);
+}
+
+.modal-header {
+    background: linear-gradient(135deg, var(--onelayer-dark) 0%, #2D2D44 100%);
+    color: white;
+    border-radius: 8px 8px 0 0;
+}
+
+.modal-content {
+    border-radius: 8px;
+    border: none;
+    box-shadow: 0 0.5rem 2rem rgba(0, 0, 0, 0.2);
+}
+
 .accordion-button:not(.collapsed) {
-    background-color: #e7f1ff;
-    color: #0c63e4;
+    background-color: rgba(0, 102, 204, 0.1);
+    color: var(--onelayer-primary);
+}
+
+.accordion-item {
+    border: 1px solid rgba(0, 102, 204, 0.2);
+    margin-bottom: 0.5rem;
+    border-radius: 6px !important;
 }
 
 #result {
     margin-top: 1rem;
+}
+
+.navbar {
+    background: linear-gradient(135deg, var(--onelayer-dark) 0%, #2D2D44 100%) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.nav-link {
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.nav-link:hover {
+    color: var(--onelayer-secondary) !important;
+}
+
+h2, h5, h6 {
+    color: var(--onelayer-dark);
+}
+
+.text-muted {
+    color: #6C757D !important;
+}
+
+.container {
+    max-width: 1400px;
 }

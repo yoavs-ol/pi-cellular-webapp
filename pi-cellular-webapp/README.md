@@ -1,6 +1,8 @@
-# Cellular Modem Configuration Service
+# OneFake - Cellular Modem Configuration Service
 
-A web-based configuration tool for Quectel RM520N-GL 5G HAT on Raspberry Pi.
+A web-based configuration tool for cellular modem testing and identity management on Raspberry Pi.
+
+**OneFake** provides a streamlined interface for managing cellular modem identity, enabling authorized testing on private networks.
 
 ## Features
 
