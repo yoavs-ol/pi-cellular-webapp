@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row">
+    <div class="col-md-10">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Operation Log</h5>
+            </div>
+            <div class="card-body">
+                <div id="logs">Loading...</div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+function loadLogs() {
+    fetch('/api/logs?limit=100')
+        .then(r => r.json())
+        .then(data => {
+            if (data.length === 0) {
+                document.getElementById('logs').innerHTML = '<p class="text-muted">No operations logged</p>';
+                return;
+            }
+            
+            let html = '<table class="table table-sm"><thead><tr><th>Time</th><th>Operation</th><th>Details</th><th>Old Value</th><th>New Value</th><th>Source</th></tr></thead><tbody>';
+            data.forEach(log => {
+                html += `<tr>
+                    <td><small>${log.timestamp}</small></td>
+                    <td><strong>${log.operation}</strong></td>
+                    <td>${log.details || ''}</td>
+                    <td>${log.old_value || ''}</td>
+                    <td>${log.new_value || ''}</td>
+                    <td><small>${log.source}</small></td>
+                </tr>`;
+            });
+            html += '</tbody></table>';
+            document.getElementById('logs').innerHTML = html;
+        });
+}
+
+loadLogs();
+</script>
+{% endblock %}

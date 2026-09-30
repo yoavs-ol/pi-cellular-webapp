@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Power Control</h5>
+            </div>
+            <div class="card-body">
+                <h6>Current Status</h6>
+                <p id="status">Loading...</p>
+                
+                <hr>
+                
+                <h6>Actions</h6>
+                <button class="btn btn-success me-2 mb-2" onclick="powerAction('on')">Radio On</button>
+                <button class="btn btn-warning me-2 mb-2" onclick="powerAction('off')">Radio Off</button>
+                <button class="btn btn-danger me-2 mb-2" onclick="powerAction('reset')">Reset Module</button>
+                <button class="btn btn-dark mb-2" onclick="confirmShutdown()">Shutdown Module</button>
+                
+                <div id="result" class="mt-3"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Actions Explained</h5>
+            </div>
+            <div class="card-body">
+                <dl>
+                    <dt>Radio On</dt>
+                    <dd>Enable radio and activate connection</dd>
+                    
+                    <dt>Radio Off</dt>
+                    <dd>Airplane mode. Reversible.</dd>
+                    
+                    <dt>Reset Module</dt>
+                    <dd>Full reboot (~45s). Auto-reconnects.</dd>
+                    
+                    <dt>Shutdown</dt>
+                    <dd><strong class="text-danger">Permanent.</strong> Requires physical power cycle.</dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+function loadStatus() {
+    fetch('/api/status')
+        .then(r => r.json())
+        .then(data => {
+            document.getElementById('status').innerHTML = 
+                `<strong>State:</strong> ${data.state || 'N/A'}<br>` +
+                `<strong>IP:</strong> ${data.ip || 'N/A'}`;
+        });
+}
+
+function powerAction(action) {
+    const messages = {
+        'on': 'Turning radio on...',
+        'off': 'Turning radio off...',
+        'reset': 'Resetting module (~45s)...'
+    };
+    
+    document.getElementById('result').innerHTML = `<div class="alert alert-info">${messages[action]}</div>`;
+    
+    fetch(`/api/power/${action}`, {method: 'POST'})
+        .then(r => r.json())
+        .then(data => {
+            const alertClass = data.success ? 'alert-success' : 'alert-danger';
+            document.getElementById('result').innerHTML = `<div class="alert ${alertClass}">${data.message}</div>`;
+            setTimeout(loadStatus, action === 'reset' ? 50000 : 2000);
+        });
+}
+
+function confirmShutdown() {
+    if (!confirm('This will POWER DOWN the module.\n\nIt will NOT come back without a physical power cycle.\n\nContinue?')) return;
+    
+    const formData = new FormData();
+    formData.append('force', 'true');
+    
+    document.getElementById('result').innerHTML = '<div class="alert alert-info">Shutting down...</div>';
+    
+    fetch('/api/power/shutdown', {
+        method: 'POST',
+        body: formData
+    })
+    .then(r => r.json())
+    .then(data => {
+        const alertClass = data.success ? 'alert-success' : 'alert-danger';
+        document.getElementById('result').innerHTML = `<div class="alert ${alertClass}">${data.message}</div>`;
+    });
+}
+
+loadStatus();
+</script>
+{% endblock %}

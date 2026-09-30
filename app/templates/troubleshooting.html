@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row">
+    <div class="col-md-10">
+        <h2>Troubleshooting Guide</h2>
+        
+        <div class="accordion mt-4" id="troubleshoot-accordion">
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#issue1">
+                        NET LED is off
+                    </button>
+                </h2>
+                <div id="issue1" class="accordion-collapse collapse show">
+                    <div class="accordion-body">
+                        <ol>
+                            <li>Check all 4 antennas are connected</li>
+                            <li>Verify SIM is inserted: <code>AT+CPIN?</code> → should return READY</li>
+                            <li>Check signal strength: <code>AT+QCSQ</code></li>
+                            <li>Verify SIM slot: <code>AT+QUIMSLOT?</code></li>
+                            <li>Check serving cell: <code>AT+QENG="servingcell"</code></li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#issue2">
+                        No response to AT commands
+                    </button>
+                </h2>
+                <div id="issue2" class="accordion-collapse collapse">
+                    <div class="accordion-body">
+                        <p>Send blind <code>ATE1</code> to enable echo, then retry.</p>
+                        <p>If still no response, check:</p>
+                        <ul>
+                            <li><code>ls /dev/ttyUSB*</code> shows ports ttyUSB0-3</li>
+                            <li>User is in <code>dialout</code> group: <code>groups</code></li>
+                            <li>ModemManager is not holding the port: <code>systemctl stop ModemManager</code></li>
+                            <li>Try different baud rates (default: 115200)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#issue3">
+                        Random reboots / disconnects
+                    </button>
+                </h2>
+                <div id="issue3" class="accordion-collapse collapse">
+                    <div class="accordion-body">
+                        <p><strong>Cause:</strong> USB power insufficient.</p>
+                        <p><strong>Fix:</strong> Connect external 5V/3A to EXT PWR on the HAT.</p>
+                        <p class="text-muted">USB-only power causes brownouts during network attach (high current draw).</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#issue4">
+                        Modem not detected by ModemManager
+                    </button>
+                </h2>
+                <div id="issue4" class="accordion-collapse collapse">
+                    <div class="accordion-body">
+                        <ol>
+                            <li>Check USB: <code>lsusb | grep 2c7c</code></li>
+                            <li>Check devices: <code>ls /dev/ttyUSB* /dev/cdc-wdm*</code></li>
+                            <li>Restart ModemManager: <code>systemctl restart ModemManager</code></li>
+                            <li>Check logs: <code>journalctl -u ModemManager -f</code></li>
+                            <li>Verify USB mode: <code>AT+QCFG="usbnet"</code> → should be 0 (QMI)</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#issue5">
+                        SIM not ready
+                    </button>
+                </h2>
+                <div id="issue5" class="accordion-collapse collapse">
+                    <div class="accordion-body">
+                        <ol>
+                            <li>Check SIM slot: <code>AT+QUIMSLOT?</code> → should show slot 1 or 2</li>
+                            <li>Switch slot: <code>AT+QUIMSLOT=1</code> or <code>AT+QUIMSLOT=2</code></li>
+                            <li>Check SIM lock: <code>AT+CPIN?</code></li>
+                            <li>Try different SIM card</li>
+                            <li>Check DIP switch on HAT (if applicable)</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#issue6">
+                        Connection fails / no data
+                    </button>
+                </h2>
+                <div id="issue6" class="accordion-collapse collapse">
+                    <div class="accordion-body">
+                        <ol>
+                            <li>Check registration: <code>AT+CEREG?</code> (LTE) or <code>AT+C5GREG?</code> (5G) → should return 0,1 or 0,5</li>
+                            <li>Verify APN: <code>AT+CGDCONT?</code> → check APN matches network</li>
+                            <li>Try manual connection: <code>nmcli connection up cellular</code></li>
+                            <li>Check logs: <code>journalctl -u ModemManager -u NetworkManager -f</code></li>
+                            <li>Try ECM mode: <code>AT+QCFG="usbnet",1</code> (requires module reboot)</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#issue7">
+                        System clock shows wrong time
+                    </button>
+                </h2>
+                <div id="issue7" class="accordion-collapse collapse">
+                    <div class="accordion-body">
+                        <p><strong>Cause:</strong> System clock not synced from cellular network.</p>
+                        <ol>
+                            <li>Check modem is registered: Dashboard shows operator + signal</li>
+                            <li>Click "Sync Clock" button on dashboard</li>
+                            <li>Check logs: <code>kubectl logs deployment/cellular-config | grep "Clock sync"</code></li>
+                        </ol>
+                        <p class="text-muted">Requires privileged container (already configured).</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

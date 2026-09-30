@@ -1,0 +1,16 @@
+[Unit]
+Description=Cellular Modem Configuration Service
+After=network.target ModemManager.service
+
+[Service]
+Type=simple
+User=one
+Group=one
+WorkingDirectory=/home/one/cellular-app
+Environment="PATH=/home/one/cellular-app/.venv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+ExecStart=/home/one/cellular-app/.venv/bin/gunicorn -b 0.0.0.0:8080 -w 2 --timeout 120 app.main:app
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

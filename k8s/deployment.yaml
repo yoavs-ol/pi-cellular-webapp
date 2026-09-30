@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cellular-config
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cellular-config
+  template:
+    metadata:
+      labels:
+        app: cellular-config
+    spec:
+      hostNetwork: true
+      containers:
+      - name: web
+        image: cellular-config:latest
+        imagePullPolicy: IfNotPresent
+        securityContext:
+          privileged: true
+        env:
+        - name: SYNC_CLOCK_ON_START
+          value: "true"
+        volumeMounts:
+        - name: dev
+          mountPath: /dev
+        - name: config
+          mountPath: /var/lib/cellular-config
+        - name: captures
+          mountPath: /var/lib/cellular-captures
+        - name: scripts
+          mountPath: /opt/scripts
+        ports:
+        - containerPort: 8080
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        lifecycle:
+          postStart:
+            exec:
+              command:
+              - python3
+              - -c
+              - "from app.utils.time_sync import sync_system_clock; sync_system_clock()"
+      volumes:
+      - name: dev
+        hostPath:
+          path: /dev
+      - name: config
+        hostPath:
+          path: /var/lib/cellular-config
+          type: DirectoryOrCreate
+      - name: captures
+        hostPath:
+          path: /var/lib/cellular-captures
+          type: DirectoryOrCreate
+      - name: scripts
+        hostPath:
+          path: /home/one
+          type: Directory

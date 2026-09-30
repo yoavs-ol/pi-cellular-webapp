@@ -1,0 +1,52 @@
+body {
+    background-color: #f8f9fa;
+}
+
+.navbar-brand {
+    font-weight: bold;
+}
+
+.card {
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+.card-header {
+    background-color: #343a40;
+    color: white;
+}
+
+.table {
+    margin-bottom: 0;
+}
+
+.table th {
+    width: 30%;
+}
+
+.alert {
+    margin-bottom: 0;
+}
+
+code {
+    background-color: #e9ecef;
+    padding: 0.2rem 0.4rem;
+    border-radius: 3px;
+}
+
+.btn {
+    margin-right: 0.5rem;
+}
+
+.modal-header {
+    background-color: #343a40;
+    color: white;
+}
+
+.accordion-button:not(.collapsed) {
+    background-color: #e7f1ff;
+    color: #0c63e4;
+}
+
+#result {
+    margin-top: 1rem;
+}

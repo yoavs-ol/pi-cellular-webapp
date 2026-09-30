@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row">
+    <div class="col-md-10">
+        <h2>AT Command Reference</h2>
+        
+        <h4 class="mt-4">Modem Information</h4>
+        <table class="table table-sm">
+            <thead><tr><th>Command</th><th>Description</th><th>Example</th></tr></thead>
+            <tbody>
+                <tr><td><code>AT</code></td><td>Test AT response</td><td>→ OK</td></tr>
+                <tr><td><code>AT+CGMI</code></td><td>Manufacturer</td><td>→ Quectel</td></tr>
+                <tr><td><code>AT+CGMM</code></td><td>Model</td><td>→ RM520N-GL</td></tr>
+                <tr><td><code>AT+CGMR</code></td><td>Firmware version</td><td>→ RM520NGLAAR03A03M4G</td></tr>
+            </tbody>
+        </table>
+        
+        <h4 class="mt-4">SIM Management</h4>
+        <table class="table table-sm">
+            <thead><tr><th>Command</th><th>Description</th><th>Example</th></tr></thead>
+            <tbody>
+                <tr><td><code>AT+CPIN?</code></td><td>SIM status</td><td>→ +CPIN: READY</td></tr>
+                <tr><td><code>AT+QUIMSLOT?</code></td><td>Query active SIM slot</td><td>→ +QUIMSLOT: 1</td></tr>
+                <tr><td><code>AT+QUIMSLOT=1</code></td><td>Switch to SIM slot 1</td><td>→ OK</td></tr>
+                <tr><td><code>AT+QUIMSLOT=2</code></td><td>Switch to SIM slot 2</td><td>→ OK</td></tr>
+            </tbody>
+        </table>
+        
+        <h4 class="mt-4">Network Operations</h4>
+        <table class="table table-sm">
+            <thead><tr><th>Command</th><th>Description</th><th>Example</th></tr></thead>
+            <tbody>
+                <tr><td><code>AT+COPS?</code></td><td>Current operator</td><td>→ +COPS: 0,0,"OneLayer",7</td></tr>
+                <tr><td><code>AT+CEREG?</code></td><td>LTE registration status</td><td>→ +CEREG: 0,1</td></tr>
+                <tr><td><code>AT+C5GREG?</code></td><td>5G registration status</td><td>→ +C5GREG: 0,1</td></tr>
+                <tr><td><code>AT+QCSQ</code></td><td>Signal quality</td><td>→ +QCSQ: "NR5G-SA",45,30,15,30</td></tr>
+                <tr><td><code>AT+QENG="servingcell"</code></td><td>Serving cell info (band, RSRP, etc.)</td><td>See manual</td></tr>
+            </tbody>
+        </table>
+        
+        <h4 class="mt-4">Data Connection</h4>
+        <table class="table table-sm">
+            <thead><tr><th>Command</th><th>Description</th><th>Example</th></tr></thead>
+            <tbody>
+                <tr><td><code>AT+CGDCONT?</code></td><td>PDP contexts</td><td>→ List of APNs</td></tr>
+                <tr><td><code>AT+CGDCONT=1,"IPV4V6","pdn-1"</code></td><td>Set APN</td><td>→ OK</td></tr>
+                <tr><td><code>AT+CGCONTRDP</code></td><td>Active PDP context</td><td>→ Shows assigned IP</td></tr>
+            </tbody>
+        </table>
+        
+        <h4 class="mt-4">USB Network Modes</h4>
+        <table class="table table-sm">
+            <thead><tr><th>Command</th><th>Description</th></tr></thead>
+            <tbody>
+                <tr><td><code>AT+QCFG="usbnet",0</code></td><td>QMI/NDIS (recommended for Linux)</td></tr>
+                <tr><td><code>AT+QCFG="usbnet",1</code></td><td>ECM (recommended for Linux)</td></tr>
+                <tr><td><code>AT+QCFG="usbnet",2</code></td><td>MBIM (Windows only)</td></tr>
+                <tr><td><code>AT+QCFG="usbnet",3</code></td><td>RNDIS (Linux OK)</td></tr>
+            </tbody>
+        </table>
+        
+        <h4 class="mt-4">Power Control</h4>
+        <table class="table table-sm">
+            <thead><tr><th>Command</th><th>Description</th></tr></thead>
+            <tbody>
+                <tr><td><code>AT+CFUN=0</code></td><td>Minimum functionality (radio off)</td></tr>
+                <tr><td><code>AT+CFUN=1</code></td><td>Full functionality (radio on)</td></tr>
+                <tr><td><code>AT+CFUN=1,1</code></td><td>Reboot module</td></tr>
+                <tr><td><code>AT+QPOWD=1</code></td><td>Power down module (requires power cycle to restore)</td></tr>
+            </tbody>
+        </table>
+        
+        <h4 class="mt-4">RAT Preferences</h4>
+        <table class="table table-sm">
+            <thead><tr><th>Command</th><th>Description</th></tr></thead>
+            <tbody>
+                <tr><td><code>AT+QNWPREFCFG="mode_pref",AUTO</code></td><td>Auto (5G/LTE/WCDMA)</td></tr>
+                <tr><td><code>AT+QNWPREFCFG="mode_pref",NR5G</code></td><td>5G only</td></tr>
+                <tr><td><code>AT+QNWPREFCFG="mode_pref",LTE</code></td><td>LTE only</td></tr>
+                <tr><td><code>AT+QNWPREFCFG="nr5g_band"</code></td><td>Query 5G bands</td></tr>
+                <tr><td><code>AT+QNWPREFCFG="lte_band"</code></td><td>Query LTE bands</td></tr>
+            </tbody>
+        </table>
+        
+        <h4 class="mt-4">Identity Management</h4>
+        <table class="table table-sm">
+            <thead><tr><th>Command</th><th>Description</th></tr></thead>
+            <tbody>
+                <tr><td><code>AT+EGMR=0,7</code></td><td>Read current IMEI</td></tr>
+                <tr><td><code>AT+EGMR=1,7,"<imei>"</code></td><td>Write IMEI (requires module reboot)</td></tr>
+            </tbody>
+        </table>
+        
+        <div class="alert alert-info mt-4">
+            <strong>Full manual:</strong> <a href="https://files.waveshare.com/upload/8/8a/Quectel_RG520N%26RG52xF%26RG530F%26RM520N%26RM530N_Series_AT_Commands_Manual_V1.0.0_Preliminary_20220812.pdf" target="_blank">Quectel RM520N AT Commands Manual</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

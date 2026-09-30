@@ -1,0 +1,32 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: cellular-cleanup
+  namespace: default
+spec:
+  schedule: "0 3 * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: cleanup
+            image: cellular-config:latest
+            imagePullPolicy: IfNotPresent
+            command:
+            - python3
+            - -c
+            - "from app.utils.file_retention import run_cleanup; run_cleanup()"
+            volumeMounts:
+            - name: captures
+              mountPath: /var/lib/cellular-captures
+            - name: config
+              mountPath: /var/lib/cellular-config
+          volumes:
+          - name: captures
+            hostPath:
+              path: /var/lib/cellular-captures
+          - name: config
+            hostPath:
+              path: /var/lib/cellular-config
+          restartPolicy: OnFailure

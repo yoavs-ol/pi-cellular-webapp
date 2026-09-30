@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row">
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">Modem Status</h5>
+            </div>
+            <div class="card-body">
+                <table class="table table-sm">
+                    <tr><th>State</th><td id="state">Loading...</td></tr>
+                    <tr><th>IMEI</th><td id="imei">Loading...</td></tr>
+                    <tr><th>IMSI</th><td id="imsi">Loading...</td></tr>
+                    <tr><th>ICCID</th><td id="iccid">Loading...</td></tr>
+                    <tr><th>Operator</th><td id="operator">Loading...</td></tr>
+                    <tr><th>RAT</th><td id="rat">Loading...</td></tr>
+                    <tr><th>Signal</th><td id="signal">Loading...</td></tr>
+                    <tr><th>IP</th><td id="ip">Loading...</td></tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">System Time</h5>
+            </div>
+            <div class="card-body">
+                <table class="table table-sm">
+                    <tr><th>Network Time</th><td id="network-time">Loading...</td></tr>
+                    <tr><th>Timezone</th><td id="tz-offset">Loading...</td></tr>
+                    <tr><th>Source</th><td id="time-source">Loading...</td></tr>
+                </table>
+                <button class="btn btn-sm btn-secondary" onclick="syncTime()">Sync Clock</button>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Quick Actions</h5>
+            </div>
+            <div class="card-body">
+                <a href="/setup" class="btn btn-primary me-2 mb-2">Configure QMI</a>
+                <a href="/identity" class="btn btn-warning me-2 mb-2">Change IMEI</a>
+                <a href="/power" class="btn btn-danger mb-2">Power Control</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="/static/js/dashboard.js"></script>
+{% endblock %}
